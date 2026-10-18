@@ -58,11 +58,11 @@ d) **Stakeholder Report:** The system combines document evidence and analytics r
 
 ## Draft Demo Summary
 
-An Operations Analyst signs in and asks a question about company policy. The copilot retrieves only documents authorized for that user and returns a cited answer.
+An Operations Analyst signs in and asks a question about company policy. The pilot retrieves only documents authorized for that user and returns a cited answer.
 
-The analyst can then ask for an operational metric. The copilot uses a read-only SQL tool to retrieve and summarize the result.
+The analyst can then ask for an operational metric. The pilot uses a read-only SQL tool to retrieve and summarize the result.
 
-Finally, the analyst can request a CRM ticket action. The copilot prepares the ticket details, waits for approval, and executes the action only after approval.
+Finally, the analyst can request a CRM ticket action. The pilot prepares the ticket details, waits for approval, and executes the action only after approval.
 
 ## High-Level Architecture
 
