@@ -25,7 +25,7 @@ d) **Stakeholder Report:** The system combines document evidence and analytics r
 ## MVP Features: Knowledge Research
 
 - Permission-aware document retrieval
-- Grounded answers with citations
+- Grounded answers with clickable citations that open the exact source passage
 - “Insufficient evidence” response when no authorized source supports the answer
 
 ### MVP Features: Analytics Query
@@ -38,6 +38,8 @@ d) **Stakeholder Report:** The system combines document evidence and analytics r
 
 - CRM ticket tool that creates or updates simulated tickets
 - Human approval before any ticket write action
+- Approval view shows the exact proposed ticket data (with a before→after diff for updates); edits create a new approval request
+- Pending approvals persist across page refreshes and service restarts
 - Audit record of the proposed action, approval decision, and result
 
 ### MVP Features: Stakeholder Report
@@ -48,7 +50,9 @@ d) **Stakeholder Report:** The system combines document evidence and analytics r
 
 ## Safety Controls
 
-- **Role-based access:** The system retrieves only documents and analytics data authorized for the signed-in user.
+- **Role-based access:** The system retrieves only documents and analytics data authorized for the signed-in user, determined from their login session, never from the chat.
+
+- **Citation validation:** Every citation must reference a passage that was actually retrieved and authorized. The backend returns "insufficient evidence" when no passage meets the relevance threshold.
 
 - **Read-only analytics:** The SQL tool can query only approved views and rejects write operations.
 
