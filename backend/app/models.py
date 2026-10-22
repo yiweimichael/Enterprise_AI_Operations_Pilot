@@ -5,7 +5,7 @@ Tickets and approval requests are added in Phase 8.
 
 import uuid
 from datetime import datetime
-from typing import Any
+from typing import Any, get_args
 
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
@@ -25,8 +25,9 @@ from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+from app.schemas import Role
 
-ROLES = ("analyst", "manager", "admin")
+ROLES: tuple[str, ...] = get_args(Role)
 EMBEDDING_DIMENSIONS = 1024
 
 _ROLE_LIST = ", ".join(f"'{role}'" for role in ROLES)

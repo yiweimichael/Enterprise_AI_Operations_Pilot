@@ -2,6 +2,8 @@
 
 Run from backend/:  python -m scripts.seed
 
+Demo users sign in with DEMO_PASSWORD from the environment.
+
 Safe to run repeatedly: users are upserted by email and documents by file name.
 Documents whose files were deleted are removed along with their chunks. Users are
 never removed, because audit logs must keep referring to them. Chunks and
@@ -15,6 +17,8 @@ import yaml
 from sqlalchemy import Connection, delete, func
 from sqlalchemy.dialects.postgresql import insert
 
+from app.auth import hash_password
+from app.config import get_settings
 from app.database import engine
 from app.models import ROLES, Document, User
 
@@ -70,11 +74,16 @@ def load_documents(directory: Path = DOCUMENTS_DIR) -> list[DocumentFile]:
 
 
 def seed(connection: Connection, directory: Path = DOCUMENTS_DIR) -> SeedResult:
-    users = insert(User).values(DEMO_USERS)
+    password_hash = hash_password(get_settings().demo_password)
+    users = insert(User).values([{**user, "password_hash": password_hash} for user in DEMO_USERS])
     connection.execute(
         users.on_conflict_do_update(
             index_elements=[User.email],
-            set_={"display_name": users.excluded.display_name, "role": users.excluded.role},
+            set_={
+                "display_name": users.excluded.display_name,
+                "role": users.excluded.role,
+                "password_hash": users.excluded.password_hash,
+            },
         )
     )
 
