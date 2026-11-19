@@ -7,7 +7,7 @@ Demo users sign in with DEMO_PASSWORD from the environment.
 Safe to run repeatedly: users are upserted by email and documents by file name.
 Documents whose files were deleted are removed along with their chunks. Users are
 never removed, because audit logs must keep referring to them. Chunks and
-embeddings are created by ingestion (Phase 3), not here.
+embeddings are created by ingestion (python -m scripts.ingest), not here.
 """
 
 from dataclasses import dataclass
@@ -37,6 +37,8 @@ class DocumentFile:
     title: str
     allowed_roles: list[str]
     body: str
+    # Where the body starts in the file's text, so chunk offsets can point into the file.
+    body_start: int
 
 
 @dataclass(frozen=True)
@@ -66,6 +68,7 @@ def read_document(path: Path) -> DocumentFile:
         title=title.strip(),
         allowed_roles=sorted(set(roles), key=ROLES.index),
         body=parts[2].strip(),
+        body_start=len(content) - len(parts[2].lstrip()),
     )
 
 

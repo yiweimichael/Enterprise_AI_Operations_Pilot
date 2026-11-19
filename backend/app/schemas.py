@@ -21,3 +21,20 @@ class CurrentUser(BaseModel):
     email: str
     display_name: str
     role: Role
+
+
+class Passage(BaseModel):
+    """A retrieved document chunk and its exact location in the source, for citations."""
+
+    chunk_id: uuid.UUID
+    document_id: uuid.UUID
+    document_title: str
+    source: str
+    section: str | None
+    page: int | None
+    # Character offsets into the source file: file_text[start_char:end_char] == content.
+    start_char: int
+    end_char: int
+    content: str
+    # Cosine similarity to the query, from -1 to 1; higher is closer.
+    similarity: float
