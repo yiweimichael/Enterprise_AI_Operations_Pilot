@@ -10,7 +10,7 @@ A secure, permission-aware AI operations pilot for enterprise knowledge search, 
 
 - [x] **Phase 0: Foundation.** Project skeleton, Postgres + pgvector in Docker Compose, Alembic migrations, CI
 - [x] **Phase 1: Data model and seed data.** Core tables, database-enforced permission rules, 16 sample documents, seed and reset commands
-- [ ] Phase 2: Authentication
+- [x] **Phase 2: Authentication.** Password login, a signed session cookie, and a current-user dependency that carries the role
 - [ ] Phase 3: Ingestion and permission-aware retrieval
 - [ ] Phase 4: Cited answers
 - [ ] Phase 5: Minimal frontend (first end-to-end workflow)
@@ -66,6 +66,20 @@ Some safety rules are enforced by the database itself, so a bug in application c
 - Changing a document's permissions updates all of its chunks in the same transaction.
 - Audit logs reject `UPDATE`, `DELETE`, and `TRUNCATE`.
 - Only the three defined roles are accepted.
+
+## Authentication
+
+Users sign in with an email and password. The backend checks the password against an Argon2 hash and, if it matches, sets a session cookie holding a signed JWT with the user's ID, email, name, and role. The cookie is `httpOnly` (page scripts cannot read it) and `SameSite=Lax`, and it expires after 8 hours.
+
+Every protected endpoint gets the user from the `get_current_user` dependency, which verifies the token's signature and expiry. The role used for permission checks comes only from that token, never from the request body or the chat, so a user cannot claim a different role by asking for it.
+
+| Endpoint | What it does |
+|---|---|
+| `POST /api/auth/login` | Checks the email and password, then sets the session cookie |
+| `POST /api/auth/logout` | Clears the session cookie |
+| `GET /api/auth/me` | Returns the signed-in user, or 401 |
+
+The demo users (`analyst@example.com`, `manager@example.com`, `admin@example.com`) sign in with `DEMO_PASSWORD` from `.env`. `JWT_SECRET` must be set in `.env` (at least 32 characters) or the backend will not start.
 
 ## Sample Data
 
