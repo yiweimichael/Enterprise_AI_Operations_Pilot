@@ -32,7 +32,7 @@ From `backend/`, with the database running and migrated:
 python -m scripts.seed
 ```
 
-This upserts three demo users (`analyst@example.com`, `manager@example.com`, `admin@example.com`) and one `documents` row per file. It can be run repeatedly. Documents whose files were deleted are removed; users are never removed, because audit logs refer to them. Chunks and embeddings are created by ingestion in Phase 3.
+This upserts three demo users (`analyst@example.com`, `manager@example.com`, `admin@example.com`) and one `documents` row per file. It can be run repeatedly. Documents whose files were deleted are removed; users are never removed, because audit logs refer to them. To chunk and embed the documents for search, run `python -m scripts.ingest` (see the main README).
 
 To return the database to a clean state instead, run:
 
